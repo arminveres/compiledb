@@ -201,6 +201,14 @@ class CommandProcessor(bashlex.ast.nodevisitor):
                 preprocessed[start:end] = out.strip()
             preprocessed = ''.join(preprocessed)
 
+        # NOTE:(aver) need to sed s/"'/"/g and s/'"/"/g
+        backslash_prot = ''
+        for char in preprocessed:
+            if char == '\\':
+                backslash_prot += '\\'
+            backslash_prot += char
+        preprocessed = backslash_prot
+
         trees = bashlex.parser.parse(preprocessed)
         processor = CommandProcessor(preprocessed, wd)
         for tree in trees:
